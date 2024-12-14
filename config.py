@@ -19,6 +19,56 @@ class prompts:
     - Return only the exact label (`Round`, `Spindle`, `Polygonal`, or `None`) as a single string.
     - Do not include any additional text, quotes, or formatting.
     """
+    
+    DETECTION_CLASSIFICATION = """
+    You will be provided with an NIH-3T3 microscopy image. The image dimension is 124x124 pixels.
+    Your task is to detect and return bounding boxes for three different cell shapes: **round**, **spindle**, and **polygonal**.
+
+    **Cell Shape Descriptions**:
+    - **Round**: Circular or near-circular cells.
+    - **Spindle**: Elongated, tapering cells resembling a spindle shape.
+    - **Polygonal**: Irregular, multi-sided cells with distinct edges.
+
+    Each bounding box should be represented by coordinates in the format `(x1, y1, x2, y2)`:
+    - `(x1, y1)` is the **top-left** corner of the bounding box.
+    - `(x2, y2)` is the **bottom-right** corner of the bounding box.
+
+    ### Expected JSON Format:
+    {
+        "Round": [(x1, y1, x2, y2), (x3, y3, x4, y4), ...],
+        "Spindle": [(x1, y1, x2, y2), (x3, y3, x4, y4), ...],
+        "Polygonal": [(x1, y1, x2, y2), (x3, y3, x4, y4), ...]
+    }
+
+    **Instructions**:
+    1. Ensure the JSON output is properly formatted for Python parsing.
+    2. Only return the JSON object; do not include any additional text, comments, or preambles.
+    """
+    
+    SINGLE_CLASS_DETECTION_CLASSIFICATION = """
+    You will be provided with an NIH-3T3 microscopy image. The image dimensions are **124x124 pixels**.
+
+    Your task is to detect and return bounding boxes for **polygonal-shaped cells**.
+
+    **Cell Shape Description**:
+    - **Polygonal**: Irregular, multi-sided cells with distinct edges.
+
+    Each bounding box should be represented by coordinates in the format `(x1, y1, x2, y2)`:
+    - `(x1, y1)` is the **top-left** corner of the bounding box.
+    - `(x2, y2)` is the **bottom-right** corner of the bounding box.
+
+    ### Expected JSON Format:
+    {
+        "Round": [(x1, y1, x2, y2), (x3, y3, x4, y4), ...],
+        "Spindle": [(x1, y1, x2, y2), (x3, y3, x4, y4), ...],
+        "Polygonal": [(x1, y1, x2, y2), (x3, y3, x4, y4), ...]
+    }
+
+    **Instructions**:
+    1. Ensure the JSON output is properly formatted for Python parsing.
+    2. Only return the JSON object; do not include any additional text, comments, or preambles.
+    """
+
 
 
 class pipeline:

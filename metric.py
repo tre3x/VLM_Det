@@ -56,3 +56,48 @@ def get_iou(bbox, label_file_path, img_path):
     # Calculate average IoU
     global_iou = sum(iou_scores) / len(iou_scores) if iou_scores else 0.0
     return global_iou
+
+def detector_iou(bbox, label_file_path, img_path):
+    ground_truth_boxes = []
+
+    with open(label_file_path, 'r') as file:
+        for line in file:
+            values = line.strip().split()
+            x_center, y_center, width, height = map(float, values[1:])
+
+            img_height, img_width, _ = cv2.imread(img_path).shape
+            x_center_abs, y_center_abs = int(x_center * img_width), int(y_center * img_height)
+            width_abs, height_abs = int(width * img_width), int(height * img_height)
+            x1 = int(x_center_abs - width_abs / 2)
+            y1 = int(y_center_abs - height_abs / 2)
+            x2 = int(x_center_abs + width_abs / 2)
+            y2 = int(y_center_abs + height_abs / 2)
+
+            ground_truth_boxes.append([x1, y1, x2, y2])
+
+    # Compute IoU for each predicted box with the best-matching ground-truth box
+    matched = [False] * len(ground_truth_boxes)
+    total_iou_score = 0.0
+    matched_count = 0
+
+    for box1 in bbox:
+        max_iou = 0.0
+        max_index = -1
+
+        # Find the box in boxes2 with the highest IoU for the current box1
+        for i, box2 in enumerate(ground_truth_boxes):
+            if not matched[i]:
+                iou = compute_iou(box1, box2)
+                if iou > max_iou:
+                    max_iou = iou
+                    max_index = i
+
+        # If a match is found, add the IoU and mark the box as matched
+        if max_index != -1:
+            total_iou_score += max_iou
+            matched[max_index] = True
+            matched_count += 1
+
+    # Calculate and return the average IoU
+    average_iou_score = total_iou_score / matched_count if matched_count > 0 else 0.0
+    return average_iou_score

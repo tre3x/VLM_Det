@@ -3,3 +3,5 @@
 **/sam-model
 **/results
 key.json
+**/.history
+**/slurm
